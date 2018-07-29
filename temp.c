@@ -29,7 +29,7 @@ main(void)
       }
 
       r = read(fd, &buf, 7);
-      if (r < 1) {
+      if (r < 0) {
          fprintf(stderr, "read(2): failed, couln't read from the file\n");
          return EXIT_FAILURE;
       }
