@@ -12,17 +12,6 @@ while true
 
    DROID=$(cat /proc/cpuinfo | sed -n 's/^Hardware *\t*: *//p')
 
-
-   # top header
-   CPU_state=$(cat /proc/cpuinfo | sed -n '/^processor/,/^Bogo/{
-      s/processor.*:[^0-9]/CPU: /
-      /model name/d
-      s/\n//
-      s/BogoMIPS *[^0-9]//
-      s/://
-      p
-}')
-
    echo $CPU_state
 
 
@@ -56,15 +45,20 @@ while true
         }
         else
            print $1, "temp = ", temp, "°C"
-           print "### current CPU frequencies.."
-           for (i = 0; i <=7; i++) {
-              printf "%s %d %s\n", "sudo cat /sys/devices/system/cpu/cpu", $i, "/cpufreq/cpuinfo_max_freq"
-           }
      }'
    else
      echo "## Error: this board is NOT an ODROID-XU4"
      exit 1
    fi
+
+   # print cpu freqencies for the BIG.little cores
+   for cpu in 0 1 2 3 4 5 6 7
+    do
+     sudo cat /sys/devices/system/cpu/cpu$cpu/cpufreq/cpuinfo_cur_freq 
+    done \
+     |
+    awk '{ print "\tCPU"NR-1,$1/1000,"MHz" }'
+
 
    sleep 1
    clear
