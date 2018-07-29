@@ -11,17 +11,16 @@ while true
    if [ $(sed -n 's/^Hardware *\t*: *//p' /proc/cpuinfo) = "ODROID-XU4" ]; then
      sudo cat /sys/devices/virtual/thermal/thermal_zone0/temp \
       |
-     cut -b -2 \
-      |
      awk '{
        threshold = 80;    # something higher than this will require attention
-        if ($1 > threshold)  {
-          print "### WARNING: your odroid have a hight temp!", $1, "°C"
+       temp = $1/1000
+        if (temp > threshold)  {
+          print "### WARNING: your odroid have a hight temp!", temp, "°C"
            for (i = 0; i <= 5; i++)
              system("aplay alarm.wav")
         }
         else
-          print "ODROID-XU4:", "temp = ", $1, "°C"
+          print "ODROID-XU4:", "temp = ", temp, "°C"
      }'
    else
      echo "## Error: this board is NOT an ODROID-XU4"; exit 1
