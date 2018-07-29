@@ -7,13 +7,12 @@
 # Orestes Leal Rodriguez, 2018
 #
 
+DELAY=2     # delay betwen refreshes, default 1 sec
+
 while true
  do
 
    DROID=$(cat /proc/cpuinfo | sed -n 's/^Hardware *\t*: *//p')
-
-   echo $CPU_state
-
 
    if [ $DROID = "ODROID-XU4" ]; then
 
@@ -60,7 +59,7 @@ while true
     awk '{ print "\tCPU"NR-1,$1/1000,"MHz" }'
 
 
-   sleep 1
+   sleep $DELAY
    clear
 
 done
