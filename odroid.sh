@@ -15,13 +15,10 @@ while true
       |
      awk '{
        threshold = 80;    # something higher than this will require attention
-     
         if ($1 > threshold)  {
           print "### WARNING: your odroid have a hight temp!", $1, "°C"
-  
            for (i = 0; i <= 5; i++)
              system("aplay alarm.wav")
-        
         }
         else
           print "ODROID-XU4:", "temp = ", $1, "°C"
