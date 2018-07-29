@@ -7,26 +7,21 @@
 # Orestes Leal Rodriguez, 2018
 #
 
-DELAY=2     # delay betwen refreshes, default 1 sec
+DELAY=2     # delay betwen refreshes, default 2 sec
 
 while true
  do
 
    DROID=$(cat /proc/cpuinfo | sed -n 's/^Hardware *\t*: *//p')
-
    if [ $DROID = "ODROID-XU4" ]; then
-
      TEMP=$(sudo cat /sys/devices/virtual/thermal/thermal_zone0/temp)
-     echo $DROID: $TEMP \
+     echo $TEMP | cut -b -2 \
       |
      awk '{
-
        threshold = 80;    # something higher than this will require attention
-                          # "configure" your desired value here (in celsius)
-       temp = $2/1000
      
-        if (temp > threshold)  {
-           print "### WARNING: your odroid have a hight temp!", temp, "°C"
+        if ($1 > threshold)  {
+           print "### WARNING: your odroid have a hight temp!", $1, "°C"
   
            # you can configure the action to whatever you want, email, etc
            # here is going to play an alarm using aplay(1) by repeating 
@@ -43,7 +38,7 @@ while true
         
         }
         else
-           print $1, "temp = ", temp, "°C"
+           print "ODROID-XU4:", "temp = ", $1, "°C"
      }'
    else
      echo "## Error: this board is NOT an ODROID-XU4"
