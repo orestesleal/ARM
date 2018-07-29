@@ -14,8 +14,9 @@ while true
 
    DROID=$(cat /proc/cpuinfo | sed -n 's/^Hardware *\t*: *//p')
    if [ $DROID = "ODROID-XU4" ]; then
-     TEMP=$(sudo cat /sys/devices/virtual/thermal/thermal_zone0/temp)
-     echo $TEMP | cut -b -2 \
+     sudo cat /sys/devices/virtual/thermal/thermal_zone0/temp \
+      |
+     cut -b -2 \
       |
      awk '{
        threshold = 80;    # something higher than this will require attention
