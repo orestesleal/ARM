@@ -6,22 +6,20 @@
 # Orestes Leal Rodriguez, 2018
 #
 DELAY=2     # delay betwen refreshes, default 2 sec
+THRESHOLD=80
 while true
  do
    if [ $(sed -n 's/^Hardware *\t*: *//p' /proc/cpuinfo) = "ODROID-XU4" ]; then
-     sudo cat /sys/devices/virtual/thermal/thermal_zone0/temp \
-      |
-     awk '{
-       threshold = 80;    # something higher than this will require attention
-       temp = $1/1000
-        if (temp > threshold)  {
-          print "### WARNING: your odroid have a hight temp!", temp, "°C"
-           for (i = 0; i <= 5; i++)
-             system("aplay alarm.wav")
-        }
-        else
-          print "ODROID-XU4:", "temp = ", temp, "°C"
-     }'
+     ./temp; temp=$?
+     # TODO: take into account the return value to check for failing reading
+     if [ $temp -gt "$THRESHOLD" ]; then
+        echo "#### WARNING: your odroid have a hight temp! -> $temp !!"
+        for a in 0 1 2 3 4 5; do
+           aplay alarm.wav
+        done
+     else
+        echo "ODROID-XU4: temp = $temp °C"
+     fi
    else
      echo "## Error: this board is NOT an ODROID-XU4"; exit 1
    fi
